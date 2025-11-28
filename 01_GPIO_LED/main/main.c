@@ -37,14 +37,20 @@ void app_main(void)
 
     while (1)
     {
-        gpio_set_level(BLINK_GPIO, 1); // przełączenie 240ns, nie ważne jaka moc narastania
+        // gpio_set_level(BLINK_GPIO, 1); // przełączenie 240ns, nie ważne jaka moc narastania
+        // gpio_set_level(BLINK_GPIO, 0);
+        // gpio_set_level(BLINK_GPIO, 1);
+        // gpio_set_level(BLINK_GPIO, 0);
+        // gpio_set_level(BLINK_GPIO, 1);
+        // gpio_set_level(BLINK_GPIO, 0);
+        // gpio_set_level(BLINK_GPIO, 1);
+        // gpio_set_level(BLINK_GPIO, 0);
+        // vTaskDelay(10 / portTICK_PERIOD_MS); // Czekaj żeby nie zawiesić rtos
+
         gpio_set_level(BLINK_GPIO, 0);
+        vTaskDelay(100 / portTICK_PERIOD_MS); // Czekaj żeby nie zawiesić rtos
         gpio_set_level(BLINK_GPIO, 1);
-        gpio_set_level(BLINK_GPIO, 0);
-        gpio_set_level(BLINK_GPIO, 1);
-        gpio_set_level(BLINK_GPIO, 0);
-        gpio_set_level(BLINK_GPIO, 1);
-        gpio_set_level(BLINK_GPIO, 0);
-        vTaskDelay(10 / portTICK_PERIOD_MS); // Czekaj żeby nie zawiesić rtos
+        vTaskDelay(100 / portTICK_PERIOD_MS); // Czekaj żeby nie zawiesić rtos
+
     }
 }
