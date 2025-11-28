@@ -70,8 +70,10 @@ void task_button(void *pvParameter)
 void app_main(void)
 {
     printf("Start app_main !!!!\n");
+
     // xTaskCreate(Funkcja, "Nazwa", RozmiarStosu, Parametry, Priorytet, Uchwyt)
     xTaskCreate(task_led, "Task led", 2048, NULL, 5, NULL);
     xTaskCreate(task_button, "Task button", 2048, NULL, 5, NULL);
+    
     printf("End app_main !!!!\n");
 }
