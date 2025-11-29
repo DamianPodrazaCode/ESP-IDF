@@ -10,6 +10,8 @@ Encoder przerwania RTOS
 #include "driver/uart.h"
 #include "esp_timer.h"
 
+#define ABSOLUTE_ENCODER
+
 #define ENC_A 19
 #define ENC_B 18
 
@@ -49,6 +51,10 @@ void task_encoder(void *pvParameter)
                     if (encoder_counter >= (last_encoder_counter + encoder_step_per_tick))
                     {
                         out++;
+#ifdef ABSOLUTE_ENCODER
+                        if (out >= 20)
+                            out = 0;
+#endif
                         printf("Counter: %d\n", out);
                         last_encoder_counter = encoder_counter;
                     }
@@ -63,6 +69,10 @@ void task_encoder(void *pvParameter)
                     if (encoder_counter <= (last_encoder_counter - encoder_step_per_tick))
                     {
                         out--;
+#ifdef ABSOLUTE_ENCODER
+                if (out <= -20)
+                    out = 0;
+#endif                        
                         printf("Counter: %d\n", out);
                         last_encoder_counter = encoder_counter;
                     }
