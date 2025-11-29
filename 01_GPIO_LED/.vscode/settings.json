@@ -19,6 +19,8 @@
   ],
   "idf.flashType": "UART",
   "files.associations": {
-    "gpio.h": "c"
+    "task.h": "c",
+    "gpio.h": "c",
+    "queue.h": "c"
   }
 }
