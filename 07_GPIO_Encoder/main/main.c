@@ -1,7 +1,5 @@
 /*
 Encoder bez przerwań z kolejką pomiędzy taskami.
-Śednia ruchoma jest po to, żeby w momęcie delikatnego cofnięcia enkodera zignorować błąd, 
-oraz jeden krok który czuję się pod ręką to są w rzeczywistości cztery kroki.
 */
 
 #include <stdio.h>
@@ -11,6 +9,7 @@ oraz jeden krok który czuję się pod ręką to są w rzeczywistości cztery kr
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "esp_timer.h"
+#include "esp_log.h"
 #include <math.h>
 
 #define ENC_A 19
@@ -19,47 +18,41 @@ oraz jeden krok który czuję się pod ręką to są w rzeczywistości cztery kr
 QueueHandle_t qEncoder;
 
 // -- śerdnia ruchoma
-const uint8_t sizeAVR = 4;
-uint8_t pAVR = 0;
+const int sizeAVR = 4;
 
-void addAVR(int *pTabAVR, uint32_t data)
+int addAVR(int *pTabAVR, uint32_t data)
 {
+    static int pAVR;
+    static int outAVR;
     if (pAVR >= sizeAVR)
     {
         pAVR = 0;
+        int tempAVR = 0;
+        for (int i = 0; i < sizeAVR; i++)
+        {
+            tempAVR += *(pTabAVR + i);
+        }
+        outAVR = tempAVR / sizeAVR;
     }
     pTabAVR[pAVR++] = data;
+    return outAVR;
 }
-
-int getAVR(int *pTabAVR)
-{
-    int64_t tempAVR = 0;
-    for (uint8_t i = 0; i < sizeAVR; i++)
-    {
-        tempAVR += pTabAVR[i];
-    }
-    return (int)(round((double)tempAVR / sizeAVR));
-}
-// --
 
 void task_print(void *pvParameter)
 {
-
     int received_command;
     int tempLastCount = 0;
-
     int tabAVR[sizeAVR] = {};
 
     while (1)
     {
         if (xQueueReceive(qEncoder, &received_command, portMAX_DELAY))
         {
-            addAVR(tabAVR, received_command);
-            int tempAVR = getAVR(tabAVR);
-            if (tempLastCount != tempAVR)
+            int outAVR = addAVR(tabAVR, received_command) / 4;
+            if (tempLastCount != outAVR)
             {
-                printf("Counter: %d\n", tempAVR);
-                tempLastCount = tempAVR;
+                printf("Counter: %d\n", outAVR);
+                tempLastCount = outAVR;
             }
         }
     }
