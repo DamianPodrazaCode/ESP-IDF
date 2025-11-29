@@ -26,9 +26,7 @@ void task_encoder(void *pvParameter)
     static int encoder_counter = 0;
     static int last_encoder_state = 0;
     uint32_t io_num;
-
     const int encoder_step_per_tick = 4;
-    // int encoder_counter = 0;
     int last_encoder_counter = 0;
     int outAVR = 0;
 
