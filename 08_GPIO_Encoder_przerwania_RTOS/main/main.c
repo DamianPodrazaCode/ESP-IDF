@@ -27,6 +27,11 @@ void task_encoder(void *pvParameter)
     static int last_encoder_state = 0;
     uint32_t io_num;
 
+    const int encoder_step_per_tick = 4;
+    // int encoder_counter = 0;
+    int last_encoder_counter = 0;
+    int outAVR = 0;
+
     while (1)
     {
         if (xQueueReceive(qEncoder, &io_num, portMAX_DELAY))
@@ -43,7 +48,12 @@ void task_encoder(void *pvParameter)
                     (last_encoder_state == 0b10 && current_state == 0b00))
                 {
                     encoder_counter++;
-                    printf("Enkoder -> Prawo, Licznik: %d\n", encoder_counter);
+                    if (encoder_counter >= (last_encoder_counter + encoder_step_per_tick))
+                    {
+                        outAVR++;
+                        printf("Counter: %d\n", outAVR);
+                        last_encoder_counter = encoder_counter;
+                    }
                 }
                 else if (
                     (last_encoder_state == 0b00 && current_state == 0b10) ||
@@ -52,7 +62,12 @@ void task_encoder(void *pvParameter)
                     (last_encoder_state == 0b01 && current_state == 0b00))
                 {
                     encoder_counter--;
-                    printf("Enkoder <- Lewo, Licznik: %d\n", encoder_counter);
+                    if (encoder_counter <= (last_encoder_counter - encoder_step_per_tick))
+                    {
+                        outAVR--;
+                        printf("Counter: %d\n", outAVR);
+                        last_encoder_counter = encoder_counter;
+                    }
                 }
                 last_encoder_state = current_state;
             }
