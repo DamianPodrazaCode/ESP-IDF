@@ -28,7 +28,7 @@ void task_encoder(void *pvParameter)
     uint32_t io_num;
     const int encoder_step_per_tick = 4;
     int last_encoder_counter = 0;
-    int outAVR = 0;
+    int out = 0;
 
     while (1)
     {
@@ -48,8 +48,8 @@ void task_encoder(void *pvParameter)
                     encoder_counter++;
                     if (encoder_counter >= (last_encoder_counter + encoder_step_per_tick))
                     {
-                        outAVR++;
-                        printf("Counter: %d\n", outAVR);
+                        out++;
+                        printf("Counter: %d\n", out);
                         last_encoder_counter = encoder_counter;
                     }
                 }
@@ -62,8 +62,8 @@ void task_encoder(void *pvParameter)
                     encoder_counter--;
                     if (encoder_counter <= (last_encoder_counter - encoder_step_per_tick))
                     {
-                        outAVR--;
-                        printf("Counter: %d\n", outAVR);
+                        out--;
+                        printf("Counter: %d\n", out);
                         last_encoder_counter = encoder_counter;
                     }
                 }

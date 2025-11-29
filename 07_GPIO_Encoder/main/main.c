@@ -15,6 +15,8 @@ Encoder bez przerwań z kolejką pomiędzy taskami.
 #define ENC_A 19
 #define ENC_B 18
 
+#define ABSOLUTE_ENCODER
+
 QueueHandle_t qEncoder;
 
 void task_print(void *pvParameter)
@@ -22,7 +24,7 @@ void task_print(void *pvParameter)
     const int encoder_step_per_tick = 4;
     int encoder_counter = 0;
     int last_encoder_counter = 0;
-    int outAVR = 0;
+    int out = 0;
 
     while (1)
     {
@@ -30,14 +32,22 @@ void task_print(void *pvParameter)
         {
             if (encoder_counter >= (last_encoder_counter + encoder_step_per_tick))
             {
-                outAVR++;
-                printf("Counter: %d\n", outAVR);
+                out++;
+#ifdef ABSOLUTE_ENCODER
+                if (out >= 20)
+                    out = 0;
+#endif
+                printf("Counter: %d\n", out);
                 last_encoder_counter = encoder_counter;
             }
             if (encoder_counter <= (last_encoder_counter - encoder_step_per_tick))
             {
-                outAVR--;
-                printf("Counter: %d\n", outAVR);
+                out--;
+#ifdef ABSOLUTE_ENCODER
+                if (out <= -20)
+                    out = 0;
+#endif
+                printf("Counter: %d\n", out);
                 last_encoder_counter = encoder_counter;
             }
         }
