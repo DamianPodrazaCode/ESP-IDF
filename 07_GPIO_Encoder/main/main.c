@@ -17,42 +17,28 @@ Encoder bez przerwań z kolejką pomiędzy taskami.
 
 QueueHandle_t qEncoder;
 
-// -- śerdnia ruchoma
-const int sizeAVR = 4;
-
-int addAVR(int *pTabAVR, uint32_t data)
-{
-    static int pAVR;
-    static int outAVR;
-    if (pAVR >= sizeAVR)
-    {
-        pAVR = 0;
-        int tempAVR = 0;
-        for (int i = 0; i < sizeAVR; i++)
-        {
-            tempAVR += *(pTabAVR + i);
-        }
-        outAVR = tempAVR / sizeAVR;
-    }
-    pTabAVR[pAVR++] = data;
-    return outAVR;
-}
-
 void task_print(void *pvParameter)
 {
-    int received_command;
-    int tempLastCount = 0;
-    int tabAVR[sizeAVR] = {};
+    const int encoder_step_per_tick = 4;
+    int encoder_counter = 0;
+    int last_encoder_counter = 0;
+    int outAVR = 0;
 
     while (1)
     {
-        if (xQueueReceive(qEncoder, &received_command, portMAX_DELAY))
+        if (xQueueReceive(qEncoder, &encoder_counter, portMAX_DELAY))
         {
-            int outAVR = addAVR(tabAVR, received_command) / 4;
-            if (tempLastCount != outAVR)
+            if (encoder_counter >= (last_encoder_counter + encoder_step_per_tick))
             {
+                outAVR++;
                 printf("Counter: %d\n", outAVR);
-                tempLastCount = outAVR;
+                last_encoder_counter = encoder_counter;
+            }
+            if (encoder_counter <= (last_encoder_counter - encoder_step_per_tick))
+            {
+                outAVR--;
+                printf("Counter: %d\n", outAVR);
+                last_encoder_counter = encoder_counter;
             }
         }
     }
