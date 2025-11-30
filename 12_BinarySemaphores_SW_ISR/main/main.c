@@ -1,3 +1,9 @@
+/*
+Semafor Binarny (Pistolet startowy): Nie ma właściciela. 
+Jedna osoba (np. Przerwanie) może podnieść flagę (Give), a inna osoba (Zadanie) może ją zabrać (Take). 
+Służy do synchronizacji ("Startuj!").
+*/
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -6,10 +12,9 @@
 
 #define BUTTON_GPIO 4
 
-// Uchwyt do naszego semafora
 SemaphoreHandle_t my_binary_semaphore = NULL;
 
-static void IRAM_ATTR gpio_isr_handler(void* arg)
+static void IRAM_ATTR gpio_isr_handler(void *arg)
 {
     // Zmienna pomocnicza, która powie nam, czy obudziliśmy ważne zadanie
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -27,13 +32,18 @@ void task_button_handler(void *pvParameter)
 {
     printf("Zadanie uruchomione. Czekam na semafor...\n");
 
-    while(1) {
-        if (xSemaphoreTake(my_binary_semaphore, portMAX_DELAY) == pdTRUE) {
+    while (1)
+    {
+        // Czekaj na semafor w nieskończoność (portMAX_DELAY).
+        // W tym momencie zadanie idzie SPAĆ (stan BLOCKED).
+        // Nie zużywa procesora!
+        if (xSemaphoreTake(my_binary_semaphore, portMAX_DELAY) == pdTRUE)
+        {
             printf("PRZYCISK NACIŚNIĘTY! (Odebrano semafor)\n");
-            
+
             // Symulacja długiej pracy (np. wysyłanie WiFi, zapis na SD)
-            vTaskDelay(100 / portTICK_PERIOD_MS); 
-            
+            vTaskDelay(100 / portTICK_PERIOD_MS);
+
             printf("Zadanie wraca do spania.\n");
         }
     }
@@ -55,6 +65,6 @@ void app_main(void)
     gpio_isr_handler_add(BUTTON_GPIO, gpio_isr_handler, NULL);
 
     xTaskCreate(task_button_handler, "BtnTask", 2048, NULL, 10, NULL);
-    
+
     printf("System gotowy. Naciśnij przycisk.\n");
 }

@@ -4,6 +4,8 @@ Funkcja printf ma wbudowane zabezpieczenie (jak by własnego mutexa), poza tym p
 rtos przeważnie to właśnie 1 - 10 ms.
 
 MUTEX - to przejęcie zmiennej globalnej, zasobu sprzętowego (uart, pamięć, i2c, spi ...) na własność danego taska, i dopóki go nie zwolni inni nie mają dostępu]
+
+Mutex (Klucz): Ma właściciela. Jeśli Zadanie A zabrało klucz, tylko Zadanie A może go oddać. Służy do blokowania dostępu ("Nie wchodź!").
 */
 
 #include <stdio.h>
