@@ -1,6 +1,6 @@
 /*
-Żeby przetestować błędnie działanie kodu bez mutexsów, czyli nakładanie się uart między taskami trzeba było zrobić własną funkcję drukującą zamiast printf.
-Funkcja printf ma wbudowane zabezpieczenie (jak by własnego mutexa), poza tym prędkość wysyłania danych na uart jest szybszy niż 1 ms, a rozdzielczość
+Żeby przetestować błędne działanie kodu bez mutexsów, czyli nakładanie się uart między taskami trzeba było zrobić własną funkcję drukującą zamiast printf.
+Funkcja printf ma wbudowane zabezpieczenie (jak by własnego mutexa), poza tym prędkość wysyłania danych na uart jest szybsze niż 1 ms, a rozdzielczość
 rtos przeważnie to właśnie 1 - 10 ms.
 
 MUTEX - to przejęcie zmiennej globalnej, zasobu sprzętowego (uart, pamięć, i2c, spi ...) na własność danego taska, i dopóki go nie zwolni inni nie mają dostępu]
