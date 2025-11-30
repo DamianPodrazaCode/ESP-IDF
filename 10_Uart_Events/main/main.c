@@ -30,8 +30,9 @@ static void uart_event_task(void *pvParameters)
             {
             case UART_DATA:
                 printf("[UART DATA]: %d bajtów\n", event.size);
-                uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY); // Odczytujemy dokładnie tyle danych, ile zgłosił sterownik
-
+                uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY); // Odczytujemy dokładnie tyle danych, ile zgłosił sterownik, 
+                // tu się nie czeka na koniec linii, tyle ile zostanie wysłane tyle się znajdzie w kolejce a później w buforze, trzeba sobie samemu zrobić rozdzielanie linii
+                // ESP-IDF Monitor niestety działa tylko w trybie raw, i trzeba uzyć innego terminala jak się chce komunikować całymi liniami
                 printf("[DATA EVT]: %s\n", (char *)dtmp);
 
                 uart_write_bytes(EX_UART_NUM, (const char *)dtmp, event.size); // Odsyłamy z powrotem (Echo)
