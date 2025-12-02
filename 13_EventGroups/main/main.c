@@ -1,56 +1,53 @@
+/*
+Grupa zdarzeń to jakby połaczenie kilku semaforów binarnych,
+ale muszą sie wykonać wszystkie naraz(AND) lub tylko jeden(OR), w zalezności od ustawień.
+Event Groups ma 24bity do flag sterujacych. 
+*/
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h" // <--- WAŻNE: Biblioteka Event Groups
 
-// Definicje bitów (flag)
-// Przesuwamy jedynkę o odpowiednią liczbę miejsc
-#define BIT_WIFI_CONNECTED  (1 << 0) // ...0001 (Dec: 1)
-#define BIT_TIME_SYNCED     (1 << 1) // ...0010 (Dec: 2)
+// Definicje bitów (flag) dostępne 24 bity
+#define BIT_1 (1 << 0)
+#define BIT_2 (1 << 1)
+#define BIT_3 (1 << 2)
 
-// Uchwyt do Grupy Zdarzeń
 EventGroupHandle_t s_init_event_group;
 
-// --- ZADANIE 1: Symulacja łączenia z Wi-Fi ---
-void task_wifi_connect(void *pvParam)
+void task_1(void *pvParam)
 {
-    printf("[WiFi] Rozpoczynam łączenie...\n");
-    
-    // Symulacja czasu łączenia (np. 3 sekundy)
+    printf("Task1 start waiting 3 sec.\n");
     vTaskDelay(3000 / portTICK_PERIOD_MS);
-    
-    printf("[WiFi] Połączono! Ustawiam bit BIT_WIFI_CONNECTED.\n");
-    
-    // Ustawiamy bit 0 na wysoki (1)
-    xEventGroupSetBits(s_init_event_group, BIT_WIFI_CONNECTED);
-    
-    // Zadanie może się zakończyć (lub pracować dalej)
-    vTaskDelete(NULL);
+    printf("Task1 ready!!!\n");
+    xEventGroupSetBits(s_init_event_group, BIT_1); // Ustawiamy bit 0 na wysoki (1)
+    vTaskDelete(NULL);                             // Zadanie może się zakończyć (lub pracować dalej)
 }
 
-// --- ZADANIE 2: Symulacja synchronizacji czasu (NTP) ---
-void task_time_sync(void *pvParam)
+void task_2(void *pvParam)
 {
-    printf("[Time] Czekam na serwer NTP...\n");
-    
-    // To trwa dłużej, np. 5 sekund
+    printf("Task2 start waiting 5 sec.\n");
     vTaskDelay(5000 / portTICK_PERIOD_MS);
-    
-    printf("[Time] Czas zsynchronizowany! Ustawiam bit BIT_TIME_SYNCED.\n");
-    
-    // Ustawiamy bit 1 na wysoki (1)
-    xEventGroupSetBits(s_init_event_group, BIT_TIME_SYNCED);
-    
-    vTaskDelete(NULL);
+    printf("Task2 ready!!!\n");
+    xEventGroupSetBits(s_init_event_group, BIT_2); // Ustawiamy bit 0 na wysoki (1)
+    vTaskDelete(NULL);                             // Zadanie może się zakończyć (lub pracować dalej)
 }
 
-// --- ZADANIE GŁÓWNE (Kierownik) ---
+void task_3(void *pvParam)
+{
+    printf("Task3 start waiting 2 sec.\n");
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    printf("Task3 ready!!!\n");
+    xEventGroupSetBits(s_init_event_group, BIT_3); // Ustawiamy bit 0 na wysoki (1)
+    vTaskDelete(NULL);                             // Zadanie może się zakończyć (lub pracować dalej)
+}
+
+
 void task_main_app(void *pvParam)
 {
-    printf("[Main] Czekam na inicjalizację systemów...\n");
+    printf("Start task_main_app!!!\n");
 
-    // Definiujemy, na jakie bity czekamy (suma logiczna OR)
-    const EventBits_t bits_to_wait_for = (BIT_WIFI_CONNECTED | BIT_TIME_SYNCED);
+    const EventBits_t bits_to_wait_for = (BIT_1 | BIT_2 | BIT_3);     // Definiujemy, na jakie bity czekamy (suma logiczna OR)
 
     EventBits_t result_bits;
 
@@ -60,22 +57,20 @@ void task_main_app(void *pvParam)
     // 3. Czy wyczyścić te bity po wyjściu? (pdTRUE = tak, resetujemy flagi)
     // 4. Czy czekać na WSZYSTKIE bity? (pdTRUE = AND, pdFALSE = OR)
     // 5. Ile czasu czekać? (portMAX_DELAY = w nieskończoność)
-    
+
     result_bits = xEventGroupWaitBits(
-                    s_init_event_group, 
-                    bits_to_wait_for, 
-                    pdTRUE,   // Clear on exit
-                    pdTRUE,   // Wait for ALL (AND logic)
-                    portMAX_DELAY
-                  );
+        s_init_event_group,
+        bits_to_wait_for,
+        pdTRUE, // Clear on exit
+        pdTRUE, // Wait for ALL (AND logic)
+        portMAX_DELAY);
 
     // Skoro przeszliśmy dalej, to znaczy, że oba warunki są spełnione!
-    
-    printf("[Main] Wszyskie systemy gotowe! (Bity: %lu)\n", result_bits);
-    printf("[Main] Startuję główną pętlę programu.\n");
 
-    while(1) {
-        // Tu właściwa praca urządzenia
+    printf("All flags ON!!!!\n");
+
+    while (1)
+    {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
@@ -87,6 +82,7 @@ void app_main(void)
 
     // 2. Uruchamiamy zadania w dowolnej kolejności
     xTaskCreate(task_main_app, "MainApp", 2048, NULL, 5, NULL);
-    xTaskCreate(task_wifi_connect, "WifiTask", 2048, NULL, 5, NULL);
-    xTaskCreate(task_time_sync, "TimeTask", 2048, NULL, 5, NULL);
+    xTaskCreate(task_1, "Task 1", 2048, NULL, 5, NULL);
+    xTaskCreate(task_2, "Task 1", 2048, NULL, 5, NULL);
+    xTaskCreate(task_3, "Task 1", 2048, NULL, 5, NULL);
 }
