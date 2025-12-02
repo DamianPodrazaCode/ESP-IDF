@@ -42,7 +42,6 @@ void task_3(void *pvParam)
     vTaskDelete(NULL);                             // Zadanie może się zakończyć (lub pracować dalej)
 }
 
-
 void task_main_app(void *pvParam)
 {
     printf("Start task_main_app!!!\n");
