@@ -1,8 +1,11 @@
+/*
+GPIO jako wejście z przyciskiem do masy
+*/
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include "driver/uart.h"
 
 #define BUTTON_GPIO 4
 

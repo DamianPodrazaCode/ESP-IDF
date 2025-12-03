@@ -1,3 +1,8 @@
+/*
+GPIO jako wyjście,
+szybkość narastania
+*/
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
