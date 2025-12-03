@@ -5,4 +5,4 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(06_GPIO_SW_przerwania_LED_RTOS_Queue)
+project(06_GPIO_ISR_switch_led_RTOS_Queue)

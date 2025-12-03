@@ -5,4 +5,4 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(05_GPIO_SW_LED_RTOS_Queue)
+project(10_RTOS_Uart_Events)

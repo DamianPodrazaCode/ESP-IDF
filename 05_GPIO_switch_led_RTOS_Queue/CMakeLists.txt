@@ -5,4 +5,4 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(12_BinarySemaphores_SW_ISR)
+project(05_GPIO_switch_led_RTOS_Queue)

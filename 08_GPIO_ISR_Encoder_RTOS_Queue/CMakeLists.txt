@@ -5,4 +5,4 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(11_Mutex_UART)
+project(08_GPIO_ISR_Encoder_RTOS_Queue)

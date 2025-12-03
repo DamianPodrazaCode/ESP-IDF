@@ -5,4 +5,4 @@
 cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(03_GPIO_SW_LED)
+project(14_RTOS_TaskNotifications)
