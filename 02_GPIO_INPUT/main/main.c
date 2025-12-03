@@ -3,13 +3,12 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include "esp_log.h" 
 
 #define BUTTON_GPIO 4
 
 void app_main(void)
 {
-
+    // GPIO jako wejście, sw do masy
     gpio_config_t io_conf = {}; 
     io_conf.pin_bit_mask = (1ULL << BUTTON_GPIO);
     io_conf.mode = GPIO_MODE_INPUT;
