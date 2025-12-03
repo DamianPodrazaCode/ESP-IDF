@@ -1,7 +1,7 @@
 /*
 Grupa zdarzeń to jakby połaczenie kilku semaforów binarnych,
 ale muszą sie wykonać wszystkie naraz(AND) lub tylko jeden(OR), w zalezności od ustawień.
-Event Groups ma 24bity do flag sterujacych. 
+Event Groups ma 24bity do flag sterujacych.
 */
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
@@ -46,23 +46,16 @@ void task_main_app(void *pvParam)
 {
     printf("Start task_main_app!!!\n");
 
-    const EventBits_t bits_to_wait_for = (BIT_1 | BIT_2 | BIT_3);     // Definiujemy, na jakie bity czekamy (suma logiczna OR)
+    const EventBits_t bits_to_wait_for = (BIT_1 | BIT_2 | BIT_3); // Definiujemy, na jakie bity czekamy (suma logiczna OR)
 
     EventBits_t result_bits;
 
-    // --- KLUCZOWA FUNKCJA: xEventGroupWaitBits ---
-    // 1. Uchwyt grupy
-    // 2. Na jakie bity czekamy? (WIFI oraz TIME)
-    // 3. Czy wyczyścić te bity po wyjściu? (pdTRUE = tak, resetujemy flagi)
-    // 4. Czy czekać na WSZYSTKIE bity? (pdTRUE = AND, pdFALSE = OR)
-    // 5. Ile czasu czekać? (portMAX_DELAY = w nieskończoność)
-
     result_bits = xEventGroupWaitBits(
-        s_init_event_group,
-        bits_to_wait_for,
-        pdTRUE, // Clear on exit
-        pdTRUE, // Wait for ALL (AND logic)
-        portMAX_DELAY);
+        s_init_event_group, // Uchwyt grupy
+        bits_to_wait_for,   // Na jakie bity czekamy?
+        pdTRUE,             // Czy wyczyścić te bity po wyjściu? (pdTRUE = tak, resetujemy flagi)
+        pdTRUE,             // Czy czekać na WSZYSTKIE bity? (pdTRUE = AND, pdFALSE = OR)
+        portMAX_DELAY);     // Ile czasu czekać? (portMAX_DELAY = w nieskończoność)
 
     // Skoro przeszliśmy dalej, to znaczy, że oba warunki są spełnione!
 

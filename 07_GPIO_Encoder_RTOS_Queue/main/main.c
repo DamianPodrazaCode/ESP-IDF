@@ -8,9 +8,6 @@ Encoder bez przerwań z kolejką pomiędzy taskami.
 #include "freertos/queue.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include "esp_timer.h"
-#include "esp_log.h"
-#include <math.h>
 
 #define ENC_A 19
 #define ENC_B 18

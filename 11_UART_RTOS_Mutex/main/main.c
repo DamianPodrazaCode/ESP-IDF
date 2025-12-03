@@ -9,13 +9,11 @@ Mutex (Klucz): Ma właściciela. Jeśli Zadanie A zabrało klucz, tylko Zadanie 
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
-#include "driver/gpio.h"
 #include "driver/uart.h"
-#include "esp_timer.h"
-#include "esp_log.h"
 #include "freertos/semphr.h" // mutex
 
 SemaphoreHandle_t uart_mutex; //zmienna globalna
@@ -44,7 +42,6 @@ void task_print1(void *pvParameter)
         if (xSemaphoreTake(uart_mutex, portMAX_DELAY) == pdTRUE) // czekamy w nieskończoność aż mutex będzie wolny
         {
             uint64_t tick = xTaskGetTickCount();
-            // printf("********************************** to jest tekst z task_print1 ******************************** %llu\n", tick);
             drukuj_bez_printf(tekst1, tick);
             xSemaphoreGive(uart_mutex); // oddajemy mutexa tak żeby inni mogli z niego skorzystasć
         }
@@ -59,7 +56,6 @@ void task_print2(void *pvParameter)
         if (xSemaphoreTake(uart_mutex, portMAX_DELAY) == pdTRUE) // czekamy w nieskończoność aż mutex będzie wolny
         {
             uint64_t tick = xTaskGetTickCount();
-            // printf("__________________________________ to jest tekst z task_print2 ________________________________ %llu\n", tick);
             drukuj_bez_printf(tekst2, tick);
             xSemaphoreGive(uart_mutex); // oddajemy mutexa tak żeby inni mogli z niego skorzystasć
         }

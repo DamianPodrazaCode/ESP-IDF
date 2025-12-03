@@ -8,7 +8,6 @@ Encoder przerwania RTOS
 #include "freertos/queue.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include "esp_timer.h"
 
 #define ABSOLUTE_ENCODER
 
