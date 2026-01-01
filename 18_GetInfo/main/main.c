@@ -2,8 +2,8 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-// #include "freertos/FreeRTOS.h"
-// #include "freertos/task.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "esp_chip_info.h"
 #include "esp_flash.h"
 #include "esp_heap_caps.h"
